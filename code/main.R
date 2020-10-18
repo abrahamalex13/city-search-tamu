@@ -2,6 +2,7 @@ rm(list=ls())
 
 library(tidyverse)
 library(ipumsr)
+library(ggridges)
 
 
 #load

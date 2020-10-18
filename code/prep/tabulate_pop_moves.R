@@ -24,7 +24,8 @@ pop <- primary1 %>%
 ggplot(pop %>% dplyr::filter(!!varname_geo.sym != 0)) + 
   geom_density(aes(pop_total))
 
-quantile(pop[["pop_total"]], probs = seq(0, 1, by = .1))
+quantile(pop %>% dplyr::filter(YEAR == 2013) %>% pull(pop_total), 
+         probs = seq(0, 1, by = .1))
 #~80% of metros have 1m or fewer people. 
 #1m, nice round number, seems natural cutoff.
 
@@ -61,12 +62,18 @@ inmoves_age_sub <- primary1 %>%
 
 
 # normalize inmove counts, prep for clustering
-inmoves_scholars_age_sub <- inmoves_age_sub %>% 
+inmoves_scholars_age_sub1 <- inmoves_age_sub %>% 
   left_join(., 
             pop %>% 
               mutate(YEAR = YEAR + 1) %>% 
               rename(pop_total.1 = pop_total)) %>% 
-  mutate(inmoves_per_thous = inmoves / (pop_total.1/1000) ) %>% 
+  mutate(inmoves_per_thous = inmoves / (pop_total.1/1000) )
+
+ggplot(inmoves_scholars_age_sub1 %>% 
+         dplyr::filter(DEGFIELD_chr != "N/A" & pop_total.1 > 1e6)) + 
+  geom_density_ridges(aes(x = inmoves_per_thous, y = DEGFIELD_chr))
+
+inmoves_scholars_age_sub <- inmoves_scholars_age_sub1 %>% 
   dplyr::select(-inmoves) %>% 
   spread(key = DEGFIELD_chr, value = inmoves_per_thous)
 
