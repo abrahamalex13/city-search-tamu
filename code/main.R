@@ -21,6 +21,6 @@ primary1 <- data %>%
 source("code/prep/edit_data_types.R")
 source("code/prep/tabulate_pop_moves.R")
 
-source("kmeans.R")
+source("code/explore/kmeans.R")
 
 #end sequence -------
